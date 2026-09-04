@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Print Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <img src="images/logo.png" alt="Pocket Mart Logo" class="logo-light">
+            <img src="images/logo_dark.png" alt="Pocket Mart Logo" class="logo-dark">
+        </div>
+        <div id="nav-page-title" class="nav-page-title"></div>
+        <nav>
+            <div id="nav-links-container" style="display: flex; align-items: center;"></div>
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search titles...">
+                <button id="search-toggle" class="search-toggle" aria-label="Toggle search">🔍</button>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="gallery" id="gallery-container">
+            <!-- Items injected by JS -->
+        </div>
+    </main>
+
+    <div id="image-modal" class="modal">
+        <span class="close-modal">&times;</span>
+        <div id="modal-content-container">
+            <img class="modal-content" id="modal-image">
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
