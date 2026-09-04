@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coming Soon - 3D Print Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base Global Theme Variables */
+        :root {
+            --bg-color: #f9f9f9;
+            --text-color: #222222;
+            --card-bg: #ffffff;
+            --accent-color: #007bff;
+            --border-color: #dddddd;
+            --transition-speed: 0.3s;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #f0f0f0;
+            --card-bg: #1e1e1e;
+            --accent-color: #4da3ff;
+            --border-color: #333333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: background-color var(--transition-speed), color var(--transition-speed);
+            line-height: 1.6;
+        }
+
+        /* Header Styles */
+        header {
+            padding: 0.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: background-color var(--transition-speed), border-color var(--transition-speed);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo-container img {
+            height: 100px;
+            width: auto;
+        }
+
+        .logo-dark {
+            display: none;
+        }
+
+        [data-theme="dark"] .logo-light {
+            display: none;
+        }
+
+        [data-theme="dark"] .logo-dark {
+            display: block;
+        }
+
+        .nav-page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-color);
+            white-space: nowrap;
+            flex: 1;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 50%;
+            transition: background-color var(--transition-speed);
+        }
+
+        .theme-toggle:hover {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        [data-theme="dark"] .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Coming Soon Specific Styles */
+        .coming-soon-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 120px);
+            text-align: center;
+            padding: 2rem;
+            animation: fadeIn 1s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .coming-soon-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--accent-color), #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
+        }
+
+        .coming-soon-subtitle {
+            font-size: 1.25rem;
+            color: var(--text-color);
+            opacity: 0.8;
+            max-width: 600px;
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+        }
+
+        .notify-container {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .notify-input {
+            flex: 1;
+            padding: 1rem 1.5rem;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .notify-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .notify-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            white-space: nowrap;
+        }
+
+        .notify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .notify-btn:active {
+            transform: translateY(0);
+        }
+
+        .printer-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            animation: printBounce 2s infinite ease-in-out;
+        }
+
+        @keyframes printBounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Thank You Popup Modal Styles */
+        .thanks-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity var(--transition-speed) ease;
+        }
+
+        .thanks-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .thanks-modal-content {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 3rem 2rem;
+            border-radius: 20px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            transform: scale(0.8);
+            transition: transform var(--transition-speed) cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid var(--border-color);
+        }
+
+        .thanks-modal.active .thanks-modal-content {
+            transform: scale(1);
+        }
+
+        .thanks-icon {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1;
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            100% { transform: scale(1); }
+        }
+
+        .thanks-modal-content h2 {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--accent-color), #9b59b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .thanks-modal-content p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .thanks-close-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.85rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .thanks-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        .thanks-close-btn:active {
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            .coming-soon-title {
+                font-size: 2.5rem;
+            }
+            .notify-container {
+                flex-direction: column;
+            }
+            .notify-btn {
+                width: 100%;
+            }
+            .thanks-modal-content {
+                padding: 2.5rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo-container">
+            <a href="index.html">
+                <img src="images/logo.png" alt="Pocket Mart Logo" class="logo-light">
+                <img src="images/logo_dark.png" alt="Pocket Mart Logo" class="logo-dark">
+            </a>
+        </div>
+        <div id="nav-page-title" class="nav-page-title">Coming Soon</div>
+        <nav>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+        </nav>
+    </header>
+
+    <main>
+        <div class="coming-soon-container">
+            <div class="printer-icon">🖨️</div>
+            <h1 class="coming-soon-title">Something Awesome is Printing...</h1>
+            <p class="coming-soon-subtitle">We're fine-tuning our 3D printers and preparing to launch an incredible new collection of prints. Join the waitlist to be the first to know when we go live!</p>
+            
+            <form class="notify-container" onsubmit="event.preventDefault(); alert('Thanks for subscribing! We\'ll email you when we launch.'); this.reset();">
+                <input type="email" name="email" class="notify-input" placeholder="Enter your email address" required>
+                <button type="submit" class="notify-btn">Notify Me</button>
+            </form>
+        </div>
+    </main>
+
+    <!-- Thank You Modal -->
+    <div id="thanks-modal" class="thanks-modal">
+        <div class="thanks-modal-content">
+            <div class="thanks-icon">🎉</div>
+            <h2>Thank You!</h2>
+            <p>You have successfully subscribed to our waitlist. We'll email you the second we launch!</p>
+            <button class="thanks-close-btn" id="close-thanks-btn">Awesome</button>
+        </div>
+    </div>
+
+    <script>
+        // Scoped Inline Dark/Light Theme Switching
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateThemeIcon(currentTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const targetTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', targetTheme);
+                localStorage.setItem('theme', targetTheme);
+                updateThemeIcon(targetTheme);
+            });
+        }
+
+        function updateThemeIcon(theme) {
+            if (!themeToggleBtn) return;
+            themeToggleBtn.textContent = theme === 'light' ? '🌙' : '☀️';
+        }
+
+        // Thank You Modal Logic
+        const thanksModal = document.getElementById('thanks-modal');
+        const closeThanksBtn = document.getElementById('close-thanks-btn');
+        const notifyForm = document.querySelector('.notify-container');
+
+        function showThanksModal() {
+            if (thanksModal) {
+                thanksModal.classList.add('active');
+            }
+        }
+
+        function closeThanksModal() {
+            if (thanksModal) {
+                thanksModal.classList.remove('active');
+            }
+        }
+
+        if (closeThanksBtn) {
+            closeThanksBtn.addEventListener('click', closeThanksModal);
+        }
+
+        if (thanksModal) {
+            thanksModal.addEventListener('click', (e) => {
+                if (e.target === thanksModal) {
+                    closeThanksModal();
+                }
+            });
+        }
+
+        if (notifyForm) {
+            notifyForm.addEventListener('submit', function(e) {
+                const action = notifyForm.getAttribute('action');
+                
+                // If there is no real action endpoint configured yet, simulate it locally
+                if (!action || action === '#' || action.startsWith('javascript:')) {
+                    e.preventDefault();
+                    
+                    const btn = notifyForm.querySelector('.notify-btn');
+                    const originalText = btn.textContent;
+                    btn.textContent = 'Sending...';
+                    btn.disabled = true;
+
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.disabled = false;
+                        showThanksModal();
+                        notifyForm.reset();
+                    }, 1000);
+                    return;
+                }
+
+                // If an action (Web3Forms/Formspree) is configured, handle via AJAX fetch
+                e.preventDefault();
+                const btn = notifyForm.querySelector('.notify-btn');
+                const originalText = btn.textContent;
+                btn.textContent = 'Sending...';
+                btn.disabled = true;
+
+                const formData = new FormData(notifyForm);
+
+                fetch(action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        showThanksModal();
+                        notifyForm.reset();
+                    } else {
+                        alert('Something went wrong. Please check your network and try again.');
+                    }
+                })
+                .catch(error => {
+                    alert('Something went wrong. Please check your network and try again.');
+                })
+                .finally(() => {
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                });
+            });
+        }
+    </script>
+</body>
+</html>

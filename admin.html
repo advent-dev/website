@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - 3D Print Gallery</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .admin-section {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .admin-item {
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        .admin-item img {
+            max-width: 150px;
+            height: auto;
+            border-radius: 8px;
+            border: 4px solid #e0e0e0;
+            padding: 4px;
+            background-color: var(--card-bg);
+            margin-bottom: 1rem;
+        }
+        .delete-btn {
+            background-color: #ff4d4d !important;
+            margin-top: 1rem;
+        }
+        .add-btn {
+            background-color: var(--accent-color) !important;
+        }
+        .save-btn {
+            background-color: #28a745 !important;
+            position: sticky;
+            bottom: 20px;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <h2>Admin Panel</h2>
+        </div>
+        <nav>
+            <a href="index.html" target="_blank">View Live Site</a>
+            <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">🌙</button>
+        </nav>
+    </header>
+
+    <main>
+        <h1>Website Editor</h1>
+        
+        <form id="admin-form">
+            <div class="admin-section">
+                <h2>Homepage Text</h2>
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="homepage-title" required>
+                </div>
+                <div class="form-group">
+                    <label>Subtitle</label>
+                    <input type="text" id="homepage-subtitle" required>
+                </div>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Background Type</label>
+                    <select id="homepage-bg-type" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <option value="default">Default Theme Background</option>
+                        <option value="color">Solid Color</option>
+                        <option value="image">Image</option>
+                    </select>
+                </div>
+                <div class="form-group" id="homepage-bg-color-group" style="display:none; margin-top: 1rem;">
+                    <label>Background Color</label>
+                    <input type="color" id="homepage-bg-color" value="#ffffff" style="width: 100%; height: 40px;">
+                </div>
+                <div class="form-group" id="homepage-bg-image-group" style="display:none; margin-top: 1rem;">
+                    <label>Background Image</label>
+                    <input type="file" accept="image/*" id="homepage-bg-image-file">
+                    <input type="hidden" id="homepage-bg-image">
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Background Size</label>
+                            <select id="homepage-bg-size" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                                <option value="cover">Cover (Fill Screen)</option>
+                                <option value="contain">Contain (Fit to Screen)</option>
+                                <option value="auto">Auto (Original Size)</option>
+                                <option value="100% 100%">Stretch to Fill</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Background Position</label>
+                            <select id="homepage-bg-position" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                                <option value="center">Center</option>
+                                <option value="top left">Top Left</option>
+                                <option value="top center">Top Center</option>
+                                <option value="top right">Top Right</option>
+                                <option value="bottom left">Bottom Left</option>
+                                <option value="bottom center">Bottom Center</option>
+                                <option value="bottom right">Bottom Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Background Opacity: <span id="homepage-bg-opacity-val">1.0</span></label>
+                        <input type="range" id="homepage-bg-opacity" min="0.05" max="1" step="0.05" value="1" style="width: 100%;">
+                    </div>
+                    
+                    <label style="margin-top: 1rem; display: block;">Live Preview</label>
+                    <div id="homepage-bg-preview" style="width: 100%; height: 200px; border: 1px solid var(--border-color); border-radius: 4px; margin-top:0.5rem; display:none;"></div>
+                </div>
+                
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Gallery Columns (Thumbnails Across)</label>
+                    <select id="homepage-gallery-cols" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <option value="auto">Auto (Responsive)</option>
+                        <option value="2">2 Columns</option>
+                        <option value="3">3 Columns</option>
+                        <option value="4">4 Columns</option>
+                        <option value="5">5 Columns</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2>Contact Page Background</h2>
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label>Background Type</label>
+                    <select id="contact-bg-type" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                        <option value="default">Default Theme Background</option>
+                        <option value="color">Solid Color</option>
+                        <option value="image">Image</option>
+                    </select>
+                </div>
+                <div class="form-group" id="contact-bg-color-group" style="display:none; margin-top: 1rem;">
+                    <label>Background Color</label>
+                    <input type="color" id="contact-bg-color" value="#ffffff" style="width: 100%; height: 40px;">
+                </div>
+                <div class="form-group" id="contact-bg-image-group" style="display:none; margin-top: 1rem;">
+                    <label>Background Image</label>
+                    <input type="file" accept="image/*" id="contact-bg-image-file">
+                    <input type="hidden" id="contact-bg-image">
+                    
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label>Background Size</label>
+                            <select id="contact-bg-size" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                                <option value="cover">Cover (Fill Screen)</option>
+                                <option value="contain">Contain (Fit to Screen)</option>
+                                <option value="auto">Auto (Original Size)</option>
+                                <option value="100% 100%">Stretch to Fill</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label>Background Position</label>
+                            <select id="contact-bg-position" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);">
+                                <option value="center">Center</option>
+                                <option value="top left">Top Left</option>
+                                <option value="top center">Top Center</option>
+                                <option value="top right">Top Right</option>
+                                <option value="bottom left">Bottom Left</option>
+                                <option value="bottom center">Bottom Center</option>
+                                <option value="bottom right">Bottom Right</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-top: 1rem;">
+                        <label>Background Opacity: <span id="contact-bg-opacity-val">1.0</span></label>
+                        <input type="range" id="contact-bg-opacity" min="0.05" max="1" step="0.05" value="1" style="width: 100%;">
+                    </div>
+
+                    <label style="margin-top: 1rem; display: block;">Live Preview</label>
+                    <div id="contact-bg-preview" style="width: 100%; height: 200px; border: 1px solid var(--border-color); border-radius: 4px; margin-top:0.5rem; display:none;"></div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2>Gallery Items</h2>
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>Select Gallery to Edit</label>
+                    <select id="gallery-select" style="padding: 0.5rem; width: 100%; border-radius: 4px; border: 1px solid var(--border-color);"></select>
+                </div>
+                <div id="gallery-admin-container">
+                    <!-- Gallery items injected here -->
+                </div>
+                
+                <div style="margin-top: 1.5rem; padding: 1rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color);">
+                    <h3 style="margin-top: 0; margin-bottom: 1rem; font-size: 1.1rem;">Bulk Upload Settings</h3>
+                    <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                        <label>Apply Background to Bulk Uploads:</label>
+                        <select id="bulk-bg-type" style="padding: 0.5rem; border-radius: 4px; border: 1px solid var(--border-color);">
+                            <option value="none">None (Default Card Background)</option>
+                            <option value="color">Solid Color</option>
+                            <option value="image">Custom Image</option>
+                        </select>
+                        <input type="color" id="bulk-bg-color" value="#ffffff" style="height: 30px; display: none; cursor: pointer;">
+                        <div id="bulk-bg-image-group" style="display:none; align-items:center; gap: 0.5rem;">
+                            <input type="file" accept="image/*" id="bulk-bg-image-file" style="font-size: 0.9em; max-width: 200px;">
+                            <input type="hidden" id="bulk-bg-image-path">
+                            <span id="bulk-bg-image-status" style="font-size: 0.8rem; color: #28a745; display: none;">✓ Uploaded</span>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="button" class="add-btn" id="add-item-btn">Add Single Print</button>
+                        <button type="button" class="add-btn" id="bulk-add-btn" style="background-color: #17a2b8 !important;">Bulk Add Prints</button>
+                        <input type="file" id="bulk-upload-input" multiple accept="image/*" style="display: none;">
+                    </div>
+                </div>
+            </div>
+
+            <div class="admin-section">
+                <h2>Navigation Menu</h2>
+                <div id="nav-admin-container"></div>
+                <button type="button" class="add-btn" id="add-nav-btn" style="margin-top: 1rem;">Add Link</button>
+            </div>
+
+            <div class="admin-section">
+                <h2>Custom Pages</h2>
+                <div id="pages-admin-container"></div>
+                <button type="button" class="add-btn" id="add-page-btn" style="margin-top: 1rem;">Create New Page</button>
+            </div>
+
+            <button type="submit" class="save-btn" id="save-btn">Save All Changes</button>
+        </form>
+    </main>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
